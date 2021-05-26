@@ -1,0 +1,64 @@
+﻿@model IEnumerable<Backend6.Models.ForumCategory>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Forum</h2>
+
+@foreach (var item in Model)
+{
+    <div class="panel panel-default forum-category">
+        <div class="panel-heading">
+            <strong> @Html.DisplayFor(modelItem => item.Name)</strong>
+            @if (User.IsInRole(ApplicationRoles.Administrators))
+            {
+                <span>
+                    | <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> | <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> | <a asp-action="Create" asp-controller="Forums" asp-route-forumCategoryId="@item.Id">Create forum</a>
+                </span>
+            }
+        </div>
+        <table class="table table-striped">
+            <tbody>
+                @if (item.Forums != null)
+                {
+                    @foreach (var i in item.Forums)
+                    {
+                        <tr>
+                            <td>
+                                <a style="font-size: 1.5em" asp-action="Details" asp-controller="Forums" asp-route-id="@i.Id">@i.Name</a>
+                                @if (User.IsInRole(ApplicationRoles.Administrators))
+                                {
+                                    <span>
+                                        | <a asp-action="Edit" asp-controller="Forums" asp-route-id="@i.Id">Edit</a>
+                                        | <a asp-action="Delete" asp-controller="Forums" asp-route-id="@i.Id">Delete</a>
+                                    </span>
+                                }
+                                <p>@i.Description</p>
+                            </td>
+                            @if (i.ForumTopics.Count() > 0)
+                            {
+                                <td style="width: 150px">@i.ForumTopics.Count topic(s)</td>
+                            }
+                            else
+                            {
+                                <td style="width: 150px">0 topic(s)</td>
+                            }
+
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@if (User.IsInRole(ApplicationRoles.Administrators))
+{
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <a asp-action="Create">Create new category</a>
+        </div>
+    </div>
+}
+
